@@ -1,36 +1,452 @@
 ---
-title: "Untitled"
+title: "Safe Roads - VICTORIA"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+    orientation: rows
+    theme: cerulean
+    vertical_layout: scroll
+    social: [ "twitter", "facebook", "menu" ]
 ---
+ <style> 
+.chart-title {
+    font-size: 18px;
+    background-color:  hsl(0, 100%, 70%);
+    color: white;
+
+ </style> 
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
-```
+#library(datasets)
+#library(ggmosaic)
+library(plotly)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(shiny)
 
-Column {data-width=650}
+
+crash <- read.csv("ACCIDENT/ACCIDENT.csv")
+node <- read.csv("ACCIDENT/NODE.csv")
+crash <- merge(crash ,node, by.x = "ACCIDENT_NO", by.y = "ACCIDENT_NO", all.x = TRUE, all.y = FALSE)
+crash <- select(crash,-c(10,11,12,13,14,17))  # drop unnecessary columns
+colnames(crash) <- toupper(colnames(crash))   # column name case change
+crash$ACCIDENTDATE <-dmy(crash$ACCIDENTDATE)  # convert char to date
+
+crash$ACCIDENTTIME <- as.POSIXct(crash$ACCIDENTTIME, format = "%H:%M:%S") # convert char to time
+crash$SPEED_ZONE[which(crash$SPEED_ZONE>110 & crash$SPEED_ZONE<999)] <- 999# imputing inappropriate val
+
+crash$SEVERITY<- factor(crash$SEVERITY) # converting Severity variable in to factors
+crash$SEVERITY_DESC <- factor(crash$SEVERITY,levels=c(1,2,3),labels = c("High","Medium","Low")) # Specifying severity factor levels and labeling
+
+
+No_accidents_1 <- crash %>% 
+  group_by("ACC_Year"=year(ACCIDENTDATE),"ACC_Month"=month(ACCIDENTDATE,label = TRUE)) %>%
+  summarise(count=n()) %>%
+  arrange(ACC_Month)# group by hours
+
+No_accidents_2 <- crash %>%
+  group_by("ACC_Year"=year(ACCIDENTDATE),"Severity"=SEVERITY_DESC) %>%
+  summarise(count=n())
+No_accidents_2 <- na.omit(No_accidents_2)# Remove missing values
+
+No_accidents_2.2 <- crash %>%
+  group_by("ACC_Year"=year(ACCIDENTDATE),"ACC_Month"=month(ACCIDENTDATE,label = TRUE),) %>%
+  summarise("No_Killed"=sum(NO_PERSONS_KILLED))
+No_accidents_2.2$Yr_Char <- as.character(No_accidents_2.2$ACC_Year)
+
+
+S3_No_accidents <- crash %>% 
+  group_by("Type"=ACCIDENT.TYPE.DESC,"ACC_Year"=year(ACCIDENTDATE)) %>%
+  summarise(count=n()) 
+
+No_accidents_3.2 <- crash %>% 
+  group_by("Type"=ACCIDENT.TYPE.DESC,"Severity"=SEVERITY_DESC) %>%
+  summarise(count=n()) 
+No_accidents_3.2 <- na.omit(No_accidents_3.2 ) # Remove missing values
+# ![ ](https://raw.githubusercontent.com/svkonda/saferoads/master/VicRoads-Logo-Large.png "Vicroads")
+
+```
+Overview
+=======================================================================
+
+
+Row {data-width=250}
+-------------------------------------
+
+### **Introduction & Overview**
+
+
+
+**Are Victorian roads getting safer ?**
+
+
+***
+
+
+Road safety is everyone's responsibility. Any safety incident on the road has the potential to change someone's life in an instant. With advances in road safety measures such as advanced traffic control, improved road networks, and relatively safer cars, I wanted to investigate if  *Victorian roads are getting any safer?*
+
+
+[Vicroads](https://www.vicroads.vic.gov.au/), is a government organisation managing road infrastructure in the state of Victoria. *Vicroads* has provided a very rich [Crash Stats - Data Extract](https://discover.data.vic.gov.au/dataset/crash-stats-data-extract) in relation to road crashes from 2006 to date (Nov-2020) under Creative Commons license. Please refer to "Crash Stats - Information about data set" section below for more details on the data used for this analysis.
+
+### **Analysis approach**
+
+Data consists of various variables related to an incident, from the type of vehicle , type of accident, people involved, accident severity, environmental factors, and many more. Using all these variables can draw a more accurate conclusion but for the scope of this work, I have focused on the following 3 key basic factors.
+
+
+1. **Number of accidents over a period of time**
+
+To understand and explore any high-level pattern in accident numbers over years and understand specific patterns within, from a month level granularity.
+
+2. **Accident severity**
+
+
+Accidents can be minor or major from simple fender benders to multiple fatalities. Understanding this will help us focus on the root cause for major incidents.
+
+3. **Type of accidents**
+
+
+Understanding the type of accident is crucial to explore areas for improvement. e.g. If more pedestrians are killed, then we need to focus on pedestrian safety mechanisms.
+
+### **Conclusion**
+
+There is a noticeable reduction in the number of road accidents from 2017 including a 57% reduction in 2020 compared to 2019 due to widespread COVID-19 restrictions. One noticeable difference was a consistent reduction in medium severity incidents compared to low and high severity incidents. 
+
+
+
+
+
+***
+
+*This analysis concludes that there is a positive trend of reduction in the number of accidents and fatalities.* 
+
+**_Victorian roads are on the path to having safe roads._**
+
+***
+
+
+
+<!-- Row {data-width=250} -->
+<!-- ----------------------------------------------------------------------- -->
+
+<!-- ### **About this Dashboard** -->
+
+<!-- + **Storytelling with open data** -->
+<!-- + MATH2404: Data Visualisation and Communication -->
+<!-- + 06 Dec 2020 -->
+<!-- + Author: Srihari.Konda -->
+<!-- + Reference material: *Data visualisation: From theory to practice*, by Dr James Baglin -->
+<!-- + Development environment -->
+
+<!--   + [rstudio](https://rstudio.com/) -->
+<!--   + [Flex dashboards](https://rmarkdown.rstudio.com/flexdashboard/) -->
+<!--   + [GitHub pages](https://pages.github.com/) -->
+<!--   + [Plotly](https://plotly.com/r/) -->
+<!--   + [R markdown cheat sheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) -->
+
+Row {data-width=250}
 -----------------------------------------------------------------------
+### **Crash Stats - Information about data set**
 
-### Chart A
+
+CrashStats data is provided to users by VicRoads for the purpose of supplying information about road crashes in Victoria for educational purposes.
+
+The data provided allows users to analyse Victorian fatal and injury crash data based on time, location, conditions, crash type, road user type, object hit etc.
+
+File ACCIDENT.zip contains the following files extracted from the VicRoads CrashStats database.  See Additional Information for the period of data extract.
+
+The files are as follows:
+
+Tables
+
+  + accident (basic accident details, time, severity, location)
+
+  + person (person based details, age, sex etc)
+
++ vehicle (vehicle based data, vehicle type, make etc)
+
+- accident_event (sequence of events e.g. left road, rollover, caught fire)
+
+- road_surface_cond (whether road was wet, dry, icy etc)
+
+- atmospheric_cond (rain, winds etc)
+
+- sub_dca (detailed codes describing accident)
+
+- accident_node (master location table - NB subset of accident table)
+
+- Node Table with Lat/Long references
+
+The files contained are documented in the CrashStats User Guide and Appendix, accessible at:
+
+http://data.vicroads.vic.gov.au/metadata/crashstats_user_guide_and_appendices.pdf
+
+Additional Information
+Field	Value
+
++ Created (Data Asset)	        05/06/2019
++ Published (Metadata record)	  01/08/2014
++ Last updated	                10/11/2020
++ Organisation	                VicRoads
++ License	                      Creative Commons Attribution 4.0 International
++ Full metadata URL	https://data.vicroads.vic.gov.au/Metadata/Crash%20Stats%20-%20Data%20Extract%20-%20Open%20Data.html
+
+
+1. Accident Trend Analysis
+=======================================================================
+
+Row 
+-------------------------------------
+   
+```{r}
+No_accidents_1 <- No_accidents_1[order(No_accidents_1$ACC_Month,decreasing = TRUE),]
+
+#fit <- fitted(loess(No_accidents_1$count ~ No_accidents_1$ACC_Year))
+
+# ---------------------
+
+P_1.1 <- plot_ly(No_accidents_1, x=~ACC_Year,y=~count,color=~ACC_Month,type ="bar")%>% 
+  layout(xaxis = list(title = 'Year'),
+         yaxis = list(title = 'No. of Acciedents'),
+         barmode = "stack",
+         title = "Acciedent Trend by Year") 
+
+No_accidents_1$Year_char <- No_accidents_1$ACC_Year
+No_accidents_1$Year_char <- as.character(No_accidents_1$Year_char)
+
+# ---------------------
+P_1.2 <- plot_ly(No_accidents_1, x = ~ACC_Month,y = ~count,type = "box",
+              text = paste("<b>Year</b> = ", No_accidents_1$Year_char,
+                           "<br><b>Month</b> = ", No_accidents_1$ACC_Month,
+                           "<br><b># of Acciedents</b> = ", No_accidents_1$count),
+                             line = list(color = 'rgb(7,40,89)'),
+              hoverinfo = "text")%>%
+  layout(xaxis = list(title = 'Month'),
+         yaxis = list(title = 'No. of Acciedents'),
+         annotations = list(
+           list(xref = "paper", yref = "paper", xanchor = "left",
+                x = 0, y = 1, showarrow = F, align = "left",
+                text = "Monthly Acciedent Trend",
+                font = list(size = 14))))
+
+```
+### 1.1: Acciedent Trend by Year
+
 
 ```{r}
+P_1.1
 
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
+### 1.2: Monthly Acciedent Trend
 
-### Chart B
 
 ```{r}
 
+P_1.2
+
 ```
 
-### Chart C
+Row {data-height=350}
+-------------------------------------
+
+### 1.1: Narration
++ Starting with a quick overview of the number of accidents over a period of time to understand any obvious patterns. And there seems to be a downward trend in the number of accidents with a major drop in 2020 due to a reduction in traffic volume.
+
+### 1.2: Narration
++ Looking at the monthly breakdown, there are on an average **1000** to **1200** accidents per month, with a clear exception to 2020. Also the months of **March**,**May**, and **December** likely to have a higher number of accidents than the rest of the year.
+
+Now it is time to understand the severity of these accidents (go to tab 2)
+
+2. Accident Severity Analysis
+=======================================================================
+
+Row 
+-------------------------------------
+
 
 ```{r}
 
+First_p <- ggplot(data = No_accidents_2,
+            aes(x = ACC_Year,
+                y = count,
+                colour = Severity))
+First_p <- First_p + geom_point() + 
+  facet_grid(~ Severity) +
+  geom_smooth(method = "lm")+
+  labs(x="Year", y="No. of Accidents", title='Accident Severity Analysis')
+
+P_2.1 <- ggplotly(First_p)
+
+P_2.2 <- plot_ly(No_accidents_2.2,
+    x = ~ACC_Month, y = ~Yr_Char,
+    z = ~No_Killed, type = "heatmap",
+    text = paste("<b>Year</b> = ", No_accidents_2.2$ACC_Year,
+                           "<br><b>Month</b> = ", No_accidents_2.2$ACC_Month,
+                           "<br><b># of Killed</b> = ", No_accidents_2.2$No_Killed),
+    hoverinfo = 'text',
+    marker = list(color='green'),
+    showlegend = F, width = 700, height = 400)%>%
+  layout(xaxis = list(title = 'Month'),
+         yaxis = list(title = 'Year'),
+         title = "Fatality Heat Map")
+
+
+```
+### 2.1: Accident Severity Analysis
+
+```{r}
+
+P_2.1
+
 ```
 
+### 2.2: Fatality Heat Map
+
+```{r} 
+
+P_2.2
+
+```
+
+Row {data-height=350}
+-------------------------------------
+
+### 2.1: Narration
++ Number of accidents only tell part of the story, general aim of this sort of analysis is to find ways to reduce road trauma, When developing measures to achieve that objective focus should be based on high impact factors, which in this case is the number of fatalities, above visual represents segmentation of the accidents based on their severity, immediately we can see that there is a consistent downward trend in Medium severity accidents, we can also observe reduction in low and high severity accidents but not as prominent.
+
+### 2.2: Narration
++ On a closer look at accidents involving fatalities *(Severity: High)*, the following visual aims to understand a broad effect (e.g. weather conditions, holiday season etc.), Which again indicates that **March**, **December** and **May** have a higher probability of accidents involving fatalities. 
+
+Digging deeper, We need to understand how or what is contributing to these  fatalities. To understand that (go to tab 3)
+
+3. Accident Type Analysis
+=======================================================================
+
+Row {data-width=350}
+-------------------------------------
+
+```{r}
+
+S3_No_accidents<- S3_No_accidents %>%  spread(Type,count) # Reshape table 
+
+# View(S3_No_accidents)
+# class(S3_No_accidents)
+# names(S3_No_accidents)
+
+names(S3_No_accidents) <- gsub(" ", "_", names(S3_No_accidents)) # Fixing spaces in column names
+S3_No_accidents <- rename(S3_No_accidents,Fixed_object_Collision=Collision_with_a_fixed_object)
+S3_No_accidents <- rename(S3_No_accidents,Other_object_Collision=collision_with_some_other_object)
+S3_No_accidents <- rename(S3_No_accidents,Vehicle_Collision=Collision_with_vehicle)
+S3_No_accidents <- rename(S3_No_accidents,Fall_from_vehicle=Fall_from_or_in_moving_vehicle)
+S3_No_accidents <- rename(S3_No_accidents,Other=No_collision_and_no_object_struck)
+S3_No_accidents <- rename(S3_No_accidents,Overturned_Vehicle="Vehicle_overturned_(no_collision)")
+
+updatemenus <- list(
+  list(
+    active = 0,
+    x = -.125,
+    type= 'buttons',
+    buttons = list(
+      list(
+        label = "Fixed_object_Collision",
+        method = "update",
+        args = list(list(visible = c(TRUE,"legendonly", "legendonly",
+                                     "legendonly", "legendonly","legendonly","legendonly","legendonly","legendonly")))),
+      list(
+        label = "Other_object_Collision",
+        method = "update",
+        args = list(list(visible = c("legendonly", TRUE, "legendonly",
+                                     "legendonly", "legendonly","legendonly","legendonly","legendonly","legendonly")))),
+      list(
+        label = "Vehicle_Collision",
+        method = "update",
+        args = list(list(visible = c("legendonly", "legendonly", TRUE,
+                                     "legendonly", "legendonly","legendonly","legendonly","legendonly","legendonly")))),
+      list(
+        label = "Fall_from_vehicle",
+        method = "update",
+        args = list(list(visible = c("legendonly", "legendonly", "legendonly",
+                                     TRUE, "legendonly","legendonly","legendonly","legendonly","legendonly")))),
+      list(
+        label = "Other",
+        method = "update",
+        args = list(list(visible = c("legendonly", "legendonly", "legendonly",
+                                     "legendonly", TRUE,"legendonly","legendonly","legendonly","legendonly")))),
+      list(
+        label = "Other_accident",
+        method = "update",
+        args = list(list(visible = c("legendonly", "legendonly", "legendonly",
+                                     "legendonly", "legendonly",TRUE,"legendonly","legendonly","legendonly")))),
+      list(
+        label = "Struck_animal",
+        method = "update",
+        args = list(list(visible = c("legendonly", "legendonly", "legendonly",
+                                     "legendonly","legendonly","legendonly", TRUE,"legendonly","legendonly")))),
+      list(
+        label = "Struck_Pedestrian",
+        method = "update",
+        args = list(list(visible = c("legendonly", "legendonly", "legendonly",
+                                     "legendonly", "legendonly","legendonly","legendonly",TRUE,"legendonly")))),
+      list(
+        label = "Overturned_Vehicle",
+        method = "update",
+        args = list(list(visible = c("legendonly", "legendonly", "legendonly",
+                                     "legendonly", "legendonly","legendonly","legendonly","legendonly",TRUE))))
+      
+    )
+  )
+)
+
+P_3.1<- plot_ly(data = S3_No_accidents) %>%
+  add_bars(x=~ACC_Year, y=~Fixed_object_Collision, name = "Fixed_object_Collision", visible = "FALSE") %>%
+  add_bars(x=~ACC_Year, y=~Other_object_Collision, name = "Other_object_Collision", visible = "legendonly") %>%
+  add_bars(x=~ACC_Year, y=~Vehicle_Collision, name = "Vehicle_Collision", visible = "legendonly") %>%
+  add_bars(x=~ACC_Year, y=~Fall_from_vehicle, name = "Fall_from_vehicle", visible = "legendonly") %>%
+  add_bars(x=~ACC_Year, y=~Other, name = "Other", visible = "legendonly") %>%
+  add_bars(x=~ACC_Year, y=~Other_accident, name = "Other_accident", visible = "legendonly") %>%
+  add_bars(x=~ACC_Year, y=~Struck_animal, name = "Struck_animal", visible = "legendonly") %>%
+  add_bars(x=~ACC_Year, y=~Struck_Pedestrian, name = "Struck_Pedestrian", visible = "legendonly") %>%
+  add_bars(x=~ACC_Year, y=~Overturned_Vehicle, name = "Overturned_Vehicle", visible = "legendonly") %>%
+  layout(title = "No. Of Traffic Accidents by Type", 
+         showlegend=TRUE,
+         xaxis=list(zeroline = FALSE,title="Date"),
+         yaxis=list(zeroline = FALSE,title="Value"),
+         updatemenus=updatemenus)
+
+
+P_3.2 <- ggplot(No_accidents_3.2, aes(x = Type, y = count, fill = Severity)) +
+  geom_bar(stat = "identity")+
+  theme(axis.text.x=element_text(angle=45,hjust=1)) +
+  labs(title = "Accident sevirity by collision type ",
+       x = "Collision Type",
+       y = "No.of Traffic Accidents by Severity")
+P_3.2 <- ggplotly(P_3.2)
+
+```
+### 3.1: Accident sevirity by collision type
+ 
+```{r}
+
+P_3.2
+
+```
+
+### 3.2: No. Of Traffic Accidents by Type
+
+```{r}
+
+P_3.1
+
+```
+
+Row {data-height=350}
+-------------------------------------
+
+### 3.1: Narration
+
++ Fatalities mostly seem to have been involved with collisions with a fixed object, other vehicles, and pedestrians covering more than **93%** of fatalities. Majority between **43% involving collision with vehicles** and **36% involving fixed objects**. The next step is to examine the type of vehicles involved and environmental & geographic conditions to understand the underlying reasons for these fatalities.
+
+### 3.2: Narration
+
++ Please select different types of collisions to see their trend over time
