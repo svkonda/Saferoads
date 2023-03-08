@@ -1,0 +1,53 @@
+Certainly! Here's an example of how to create fact and dimension tables from a single table using Power BI:
+
+Assuming you have already loaded the "Sales" table into Power BI, follow these steps:
+
+Create the fact table:
+In Power BI Desktop, click on the "Modeling" tab in the ribbon and then click on "New Table".
+In the formula bar at the top, enter the following DAX formula to create the fact table:
+javascript
+Copy code
+Sales_Fact = SELECTCOLUMNS(Sales, 
+                          "Sales_ID", Sales[Sales_ID],
+                          "Date_ID", Sales[Date],
+                          "Product_ID", Sales[Product],
+                          "Customer_ID", Sales[Customer],
+                          "Sales_Amount", Sales[Sales_Amount])
+Click on "Apply" to create the fact table.
+Create the dimension tables:
+Click on "New Table" again and enter the following formula in the formula bar to create the "Date_Dim" table:
+sql
+Copy code
+Date_Dim = SELECTCOLUMNS(DISTINCT(Sales[Date]), 
+                          "Date_ID", Sales[Date],
+                          "Day_of_Week", WEEKDAY(Sales[Date],1),
+                          "Month", MONTH(Sales[Date]),
+                          "Quarter", CONCATENATE("Q",FORMAT(CEILING(MONTH(Sales[Date])/3,1),"0")),
+                          "Year", YEAR(Sales[Date]))
+Click on "Apply" to create the "Date_Dim" table.
+
+Repeat the above step to create the "Product_Dim" and "Customer_Dim" tables:
+
+less
+Copy code
+Product_Dim = SELECTCOLUMNS(DISTINCT(Sales[Product]), 
+                             "Product_ID", Sales[Product],
+                             "Product", Sales[Product],
+                             "Category", Sales[Category])
+
+Customer_Dim = SELECTCOLUMNS(DISTINCT(Sales[Customer]), 
+                              "Customer_ID", Sales[Customer],
+                              "Customer", Sales[Customer],
+                              "Age", 25,
+                              "Gender", "Male",
+                              "Location", "USA")
+Click on "Apply" to create the "Product_Dim" and "Customer_Dim" tables.
+Define relationships:
+Click on the "Manage relationships" button in the "Modeling" tab and create the following relationships:
+
+Sales_Fact to Date_Dim: Sales_Fact[Date_ID] -> Date_Dim[Date_ID]
+Sales_Fact to Product_Dim: Sales_Fact[Product_ID] -> Product_Dim[Product_ID]
+Sales_Fact to Customer_Dim: Sales_Fact[Customer_ID] -> Customer_Dim[Customer_ID]
+Set the relationship between Sales_Fact and Date_Dim to "Many to One (M:1)" and enable "Bi-Directional" filtering. Set the other relationships to "One to Many (1:M)".
+
+Now that the fact and dimension tables are set up and linked, you can start building visualizations and reports using the fields from the various tables. For example, you can create a table that shows total sales by product category and quarter, or a bar chart that shows sales trends over time by customer location and age group.
