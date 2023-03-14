@@ -1,0 +1,13 @@
+
+--STEP 1: CREATE SCHEMA based on your unique <teamname> in the FDN_AGAME_DISCOVERY database
+USE ROLE COMMUNITY;
+USE DATABASE "FDN_AGAME_DISCOVERY";FDN_AGAME_DISCOVERY
+CREATE SCHEMA "YOUR_TEAM_NAME";
+
+
+--STEP 2: Confirm your default Role (COMMUNITY) and Warehouse (COMMUNITY_WH); use the following if necessary
+ALTER USER "YOUR.EMAIL@EXXONMOBIL.COM" SET DEFAULT_WAREHOUSE = COMMUNITY_WH DEFAULT_ROLE = "COMMUNITY"
+
+
+--STEP 3: Get familar with the data available for your quest in data discovery
+SELECT * FROM FDN_AGAME_DISCOVERY.DATA_PRODUCTS.COUNTERPARTY LIMIT 100;
