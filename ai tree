@@ -57,104 +57,163 @@
    8.1 Artificial General Intelligence (AGI)
    8.2 Technological Singularity
    8.3 Ethics of Superintelligent AI
-Certainly! Here's a tree-like hierarchy of AI terminology organized into five levels:
-
-Level 1: Artificial Intelligence (AI)
-- General field of creating machines that can perform tasks that typically require human intelligence.
-
-Level 2: AI Domains
-- Machine Learning (ML)
-- Natural Language Processing (NLP)
-- Computer Vision (CV)
-- Robotics
-- Expert Systems
-
-Level 3: Machine Learning (ML)
-- Supervised Learning
-  - Classification
-  - Regression
-- Unsupervised Learning
-  - Clustering
-  - Dimensionality Reduction
-- Semi-Supervised Learning
-- Reinforcement Learning
-- Deep Learning
-  - Neural Networks
-  - Convolutional Neural Networks (CNN)
-  - Recurrent Neural Networks (RNN)
-  - Generative Adversarial Networks (GAN)
-
-Level 3: Natural Language Processing (NLP)
-- Tokenization
-- Named Entity Recognition (NER)
-- Sentiment Analysis
-- Language Modeling
-- Machine Translation
-- Speech Recognition
-- Text Generation
-
-Level 3: Computer Vision (CV)
-- Image Classification
-- Object Detection
-- Image Segmentation
-- Feature Extraction
-- Pose Estimation
-
-Level 3: Robotics
-- Kinematics
-- Motion Planning
-- Robot Perception
-- Control Systems
-- Pathfinding
-
-Level 3: Expert Systems
-- Knowledge Representation
-- Inference Engine
-- Rule-Based Systems
-- Fuzzy Logic
-- Knowledge Base
-
-Level 4: Specific Techniques
-- Transfer Learning
-- Data Augmentation
-- Ensemble Learning
-- Hyperparameter Tuning
-- Gradient Descent
-- Backpropagation
-
-Level 4: Advanced NLP
-- Named Entity Disambiguation
-- Coreference Resolution
-- Dependency Parsing
-- Language Generation
-- Speech Synthesis
-
-Level 4: Advanced CV
-- Object Tracking
-- Image Registration
-- 3D Reconstruction
-- Image Restoration
-- Image Super-Resolution
-
-Level 4: Advanced Robotics
-- SLAM (Simultaneous Localization and Mapping)
-- Manipulator Design
-- Human-Robot Interaction
-- Swarm Robotics
-- Cognitive Robotics
-
-Level 4: AI Ethics and Safety
-- Bias in AI
-- Fairness and Accountability
-- Robustness
-- Explainable AI (XAI)
-- Value Alignment
-
-Level 5: Emerging AI Concepts
-- Quantum Machine Learning
-- Neuromorphic Computing
-- Autonomous Agents
-- Meta-Learning
-- AI for Creativity
-
-Please note that this is not an exhaustive list, and AI is a rapidly evolving field, so new concepts may emerge over time. Additionally, the organization of terms into this hierarchy is based on general relationships but might not cover all possible connections or variations within the field.
+1. Machine Learning
+   1.1 Supervised Learning
+       1.1.1 Classification
+           1.1.1.1 Binary Classification
+               1.1.1.1.1 Logistic Regression
+               1.1.1.1.2 Support Vector Machines (SVM)
+           1.1.1.2 Multiclass Classification
+               1.1.1.2.1 One-vs-All
+               1.1.1.2.2 Softmax Regression
+       1.1.2 Regression
+           1.1.2.1 Linear Regression
+           1.1.2.2 Polynomial Regression
+   1.2 Unsupervised Learning
+       1.2.1 Clustering
+           1.2.1.1 K-Means Clustering
+           1.2.1.2 Hierarchical Clustering
+       1.2.2 Dimensionality Reduction
+           1.2.2.1 Principal Component Analysis (PCA)
+           1.2.2.2 t-Distributed Stochastic Neighbor Embedding (t-SNE)
+   1.3 Semi-Supervised Learning
+   1.4 Reinforcement Learning
+       1.4.1 Markov Decision Process (MDP)
+           1.4.1.1 State
+           1.4.1.2 Action
+       1.4.2 Policy Gradient Methods
+           1.4.2.1 Actor-Critic
+2. Neural Networks
+   2.1 Feedforward Neural Networks
+       2.1.1 Activation Functions
+           2.1.1.1 Sigmoid
+           2.1.1.2 ReLU (Rectified Linear Unit)
+       2.1.2 Backpropagation
+           2.1.2.1 Gradient Descent
+           2.1.2.2 Learning Rate
+   2.2 Convolutional Neural Networks (CNN)
+       2.2.1 Convolutional Layers
+       2.2.2 Pooling Layers
+   2.3 Recurrent Neural Networks (RNN)
+       2.3.1 Long Short-Term Memory (LSTM)
+       2.3.2 Gated Recurrent Unit (GRU)
+       2.3.3 Sequence-to-Sequence Models
+3. Hyperparameter Tuning
+   3.1 Grid Search
+   3.2 Random Search
+   3.3 Bayesian Optimization
+       3.3.1 Gaussian Process Regression
+4. Model Evaluation
+   4.1 Cross-Validation
+       4.1.1 k-Fold Cross-Validation
+       4.1.2 Stratified Cross-Validation
+   4.2 Overfitting and Underfitting
+       4.2.1 Bias-Variance Tradeoff
+   4.3 ROC Curve (Receiver Operating Characteristic)
+       4.3.1 AUC (Area Under the Curve)
+   4.4 Confusion Matrix
+5. Ensemble Methods
+   5.1 Bagging
+       5.1.1 Random Forest
+   5.2 Boosting
+       5.2.1 AdaBoost
+       5.2.2 Gradient Boosting
+6. Unsupervised Techniques
+   6.1 Association Rule Learning
+       6.1.1 Apriori Algorithm
+       6.1.2 FP-Growth Algorithm
+   6.2 Anomaly Detection
+       6.2.1 Isolation Forest
+       6.2.2 One-Class SVM
+7. Feature Engineering
+   7.1 Feature Selection
+       7.1.1 Recursive Feature Elimination (RFE)
+   7.2 Feature Extraction
+       7.2.1 Principal Component Analysis (PCA)
+       7.2.2 Linear Discriminant Analysis (LDA)
+   7.3 Feature Scaling
+       7.3.1 Standardization (Z-score normalization)
+       7.3.2 Min-Max Scaling
+8. Regularization
+   8.1 L1 Regularization (Lasso)
+   8.2 L2 Regularization (Ridge)
+       8.2.1 Elastic Net Regularization
+9. Loss Functions
+   9.1 Mean Squared Error (MSE)
+   9.2 Cross-Entropy Loss
+   9.3 Hinge Loss
+   9.4 KL Divergence (Kullback-Leibler Divergence)
+10. Optimization Algorithms
+    10.1 Stochastic Gradient Descent (SGD)
+        10.1.1 Mini-batch Gradient Descent
+    10.2 Adam Optimizer
+11. Learning Rate Scheduling
+    11.1 Learning Rate Decay
+    11.2 Step Decay
+    11.3 Exponential Decay
+12. Regularization Techniques
+    12.1 Dropout
+    12.2 Batch Normalization
+13. Data Augmentation
+    13.1 Image Augmentation
+    13.2 Text Augmentation
+14. Imbalanced Data Handling
+    14.1 Oversampling
+    14.2 Undersampling
+    14.3 SMOTE (Synthetic Minority Over-sampling Technique)
+15. Transfer Learning
+    15.1 Pretrained Models
+    15.2 Fine-Tuning
+    15.3 Domain Adaptation
+16. Explainable AI (XAI)
+    16.1 LIME (Local Interpretable Model-Agnostic Explanations)
+    16.2 SHAP (SHapley Additive exPlanations)
+17. AutoML (Automated Machine Learning)
+    17.1 Neural Architecture Search (NAS)
+    17.2 Hyperparameter Optimization
+        17.2.1 Bayesian Optimization for Hyperparameters
+18. Time Series Analysis
+    18.1 Stationarity
+    18.2 Autoregressive Integrated Moving Average (ARIMA)
+    18.3 Seasonal Decomposition of Time Series (STL)
+19. Time Series Forecasting
+    19.1 Exponential Smoothing Methods
+    19.2 Prophet Algorithm
+    19.3 Long Short-Term Memory (LSTM) for Time Series
+20. Word Embeddings
+    20.1 Word2Vec
+    20.2 GloVe (Global Vectors for Word Representation)
+    20.3 FastText
+21. Sequence Modeling
+    21.1 Sequence-to-Sequence Models
+        21.1.1 Encoder-Decoder Architecture
+        21.1.2 Attention Mechanisms
+22. Reinforcement Learning Algorithms
+    22.1 Q-Learning
+    22.2 Deep Q-Networks (DQN)
+    22.3 Policy Gradient Algorithms
+23. Imitation Learning
+    23.1 Behavioral Cloning
+    23.2 Inverse Reinforcement Learning (IRL)
+24. Multi-Agent Systems
+    24.1 Centralized vs. Decentralized
+    24.2 Markov Games
+25. Evolutionary Algorithms
+    25.1 Genetic Algorithms
+    25.2 Genetic Programming
+26. Quantum Machine Learning
+    26.1 Quantum Circuits
+    26.2 Quantum Annealing
+27. Federated Learning
+    27.1 Collaborative Edge Learning
+    27.2 Privacy-Preserving Machine Learning
+28. Model Compression
+    28.1 Pruning
+    28.2 Quantization
+    28.3 Knowledge Distillation
+29. Explainable Reinforcement Learning
+    29.1 Influence Functions
+    29.2 SHAP Values for RL
+30. Causality in Machine Learning
+    30.1 Causal Inference
+    30.2 Counterfactual Reasoning
